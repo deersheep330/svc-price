@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+  cron:
+    image: 127.0.0.1:5000/price_cron
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./api:/home/app/api
+      - ./price:/home/app/price
+      - ./main.py:/home/app/main.py
+      - ./token.ini:/home/app/token.ini
+
+networks:
+  default:
+    external:
+      name: svc-overlay-network
