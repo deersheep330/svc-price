@@ -47,13 +47,12 @@ class TwPriceParser():
         finally:
             return self
 
-    def save_to_db(self):
+    def save_open_price_to_db(self):
 
-        if self.symbol is None or self.price_open is None or self.price_close is None or self.datetime is None:
+        if self.symbol is None or self.price_open is None or self.datetime is None:
             print('cannot write missing data to db')
             return
 
-        # insert open price
         timestamp = datetime_to_timestamp(self.datetime)
         _dict = {
             'symbol': self.symbol,
@@ -72,8 +71,18 @@ class TwPriceParser():
             print(e.details())
             print(status_code.name, status_code.value)
 
-        # insert close price
-        _dict['price'] = self.price_close
+    def save_close_price_to_db(self):
+
+        if self.symbol is None or self.price_close is None or self.datetime is None:
+            print('cannot write missing data to db')
+            return
+
+        timestamp = datetime_to_timestamp(self.datetime)
+        _dict = {
+            'symbol': self.symbol,
+            'date': timestamp,
+            'price': self.price_close
+        }
         try:
             rowcount = self.stub.insert_twse_close_price(StockPrice(
                 symbol=_dict['symbol'],
